@@ -1,152 +1,300 @@
-# Assignment 2: CNN Image Classification API
+# Assignment 2: Convolutional Neural Networks (CNN) # Assignment 2: CNN Image Classification API
 
-This repository contains the implementation of Assignment 2 for the Applied Generative AI course. The assignment involves implementing a Convolutional Neural Network (CNN) with a specific architecture and deploying it as a FastAPI service with Docker containerization.
 
-## 🎯 Assignment Overview
 
-**Assignment 2** consists of three main parts:
-1. **CNN Architecture Implementation**: Implement a CNN matching the exact specifications
-2. **FastAPI Integration**: Create API endpoints for image classification
-3. **Docker Deployment**: Containerize the application for production deployment
+## CNN Architecture SpecificationThis repository contains the implementation of Assignment 2 for the Applied Generative AI course. The assignment involves implementing a Convolutional Neural Network (CNN) with a specific architecture and deploying it as a FastAPI service with Docker containerization.
 
-## 🏗️ CNN Architecture Specification
 
-The CNN follows the exact architecture specified in the assignment:
 
-```
-Input: RGB image of size 64×64×3
-├── Conv2D (16 filters, 3×3 kernel, stride=1, padding=1)
-├── ReLU activation
+The CNN follows the exact architecture specified in the assignment:## 🎯 Assignment Overview
+
+
+
+```**Assignment 2** consists of three main parts:
+
+Input: RGB image of size 64×64×31. **CNN Architecture Implementation**: Implement a CNN matching the exact specifications
+
+├── Conv2D (16 filters, 3×3 kernel, stride=1, padding=1)2. **FastAPI Integration**: Create API endpoints for image classification
+
+├── ReLU activation3. **Docker Deployment**: Containerize the application for production deployment
+
 ├── MaxPooling2D (2×2 kernel, stride=2)
-├── Conv2D (32 filters, 3×3 kernel, stride=1, padding=1)
+
+├── Conv2D (32 filters, 3×3 kernel, stride=1, padding=1)## 🏗️ CNN Architecture Specification
+
 ├── ReLU activation
-├── MaxPooling2D (2×2 kernel, stride=2)
+
+├── MaxPooling2D (2×2 kernel, stride=2)The CNN follows the exact architecture specified in the assignment:
+
 ├── Flatten
-├── Fully Connected (100 units)
-├── ReLU activation
-└── Fully Connected (10 units - output classes)
-```
 
-**Model Statistics:**
-- Total Parameters: 825,398
-- Model Size: ~3.15 MB
-- Training Dataset: CIFAR-10 (resized to 64×64)
+├── Fully Connected (100 units)```
+
+├── ReLU activationInput: RGB image of size 64×64×3
+
+└── Fully Connected (10 units - output classes)├── Conv2D (16 filters, 3×3 kernel, stride=1, padding=1)
+
+```├── ReLU activation
+
+├── MaxPooling2D (2×2 kernel, stride=2)
+
+**Model Statistics:**├── Conv2D (32 filters, 3×3 kernel, stride=1, padding=1)
+
+- Total Parameters: 825,398├── ReLU activation
+
+- Model Size: ~3.15 MB├── MaxPooling2D (2×2 kernel, stride=2)
+
+- Training Dataset: CIFAR-10 (resized to 64×64)├── Flatten
+
+- Test Accuracy: 65.68%├── Fully Connected (100 units)
+
+├── ReLU activation
+
+└── Fully Connected (10 units - output classes)
+
+### 1. Setup Environment```
+
+
+
+```bash**Model Statistics:**
+
+# Clone the repository- Total Parameters: 825,398
+
+git clone <repository-url>- Model Size: ~3.15 MB
+
+cd assignment2- Training Dataset: CIFAR-10 (resized to 64×64)
+
 - Test Accuracy: 65.68%
 
-## 📁 Repository Structure
+# Install dependencies
+
+pip install -r requirements_assignment2.txt## 📁 Repository Structure
 
 ```
-assignment2/
+
+```
+
+### 2. Run the CNN Training (Optional)assignment2/
+
 ├── assignment2_cnn_classifier.py    # CNN implementation and training
-├── assignment2_api.py               # FastAPI server implementation
-├── assignment2_demo.py              # Complete demonstration
-├── test_assignment2_api.py          # API testing client
-├── Dockerfile.assignment2          # Docker configuration
+
+```bash├── assignment2_api.py               # FastAPI server implementation
+
+# Train the CNN model from scratch├── assignment2_demo.py              # Complete demonstration
+
+python assignment2_cnn_classifier.py├── test_assignment2_api.py          # API testing client
+
+```├── Dockerfile.assignment2          # Docker configuration
+
 ├── requirements_assignment2.txt     # Python dependencies
-├── models/
+
+### 3. Start the API Server├── models/
+
 │   └── assignment2_cnn.pth         # Trained model weights
-└── README.md                        # This file
-```
 
-## 🚀 Quick Start
+```bash└── README.md                        # This file
 
-### 1. Setup Environment
+# Start the FastAPI server```
 
-```bash
-# Clone the repository
-git clone <repository-url>
+uvicorn assignment2_api:app --host 0.0.0.0 --port 8000
+
+```## 🚀 Quick Start
+
+
+
+### 4. Test the API### 1. Setup Environment
+
+
+
+```bash```bash
+
+# Run the test client# Clone the repository
+
+python test_assignment2_api.pygit clone <repository-url>
+
 cd assignment2
 
-# Install dependencies
-pip install -r requirements_assignment2.txt
+# Or test manually with curl
+
+curl -X GET http://localhost:8000/health# Install dependencies
+
+```pip install -r requirements_assignment2.txt
+
 ```
 
-### 2. Run the CNN Training (Optional)
 
-```bash
+
+## Docker Deployment### 2. Run the CNN Training (Optional)
+
+
+
+### Build the Docker Image```bash
+
 # Train the CNN model from scratch
-python assignment2_cnn_classifier.py
+
+```bashpython assignment2_cnn_classifier.py
+
+docker build -f Dockerfile.assignment2 -t assignment2-cnn .```
+
 ```
 
 ### 3. Start the API Server
 
-```bash
-# Start the FastAPI server
-uvicorn assignment2_api:app --host 0.0.0.0 --port 8000
-```
-
-### 4. Test the API
-
-```bash
-# Run the test client
-python test_assignment2_api.py
-
-# Or test manually with curl
-curl -X GET http://localhost:8000/health
-```
-
-## 🌐 API Endpoints
-
-| Endpoint | Method | Description |
-|----------|---------|-------------|
-| `/` | GET | API information and documentation |
-| `/health` | GET | Health check endpoint |
-| `/model/info` | GET | Model architecture information |
-| `/classes` | GET | List of supported classes |
-| `/classify` | POST | Single image classification |
-| `/classify/batch` | POST | Batch image classification |
-
-### Example API Usage
-
-**Single Image Classification:**
-```bash
-curl -X POST "http://localhost:8000/classify" \
-     -H "accept: application/json" \
-     -H "Content-Type: multipart/form-data" \
-     -F "file=@image.jpg"
-```
-
-**Response:**
-```json
-{
-  "filename": "image.jpg",
-  "prediction": {
-    "class": "airplane",
-    "class_index": 0,
-    "confidence": 0.892
-  },
-  "top_3_predictions": [
-    {"class": "airplane", "class_index": 0, "confidence": 0.892},
-    {"class": "bird", "class_index": 2, "confidence": 0.087},
-    {"class": "ship", "class_index": 8, "confidence": 0.021}
-  ]
-}
-```
-
-## 🐳 Docker Deployment
-
-### Build the Docker Image
-
-```bash
-docker build -f Dockerfile.assignment2 -t assignment2-cnn .
-```
-
 ### Run the Container
 
 ```bash
+
+```bash# Start the FastAPI server
+
+docker run -p 8000:8000 assignment2-cnnuvicorn assignment2_api:app --host 0.0.0.0 --port 8000
+
+``````
+
+
+
+### Health Check### 4. Test the API
+
+
+
+```bash```bash
+
+curl http://localhost:8000/health# Run the test client
+
+```python test_assignment2_api.py
+
+
+
+## Model Performance# Or test manually with curl
+
+curl -X GET http://localhost:8000/health
+
+**Training Results:**```
+
+- Dataset: CIFAR-10 (50,000 training, 10,000 test images)
+
+- Image Size: Resized from 32×32 to 64×64 RGB## 🌐 API Endpoints
+
+- Training Epochs: 10
+
+- Final Test Accuracy: 65.68%| Endpoint | Method | Description |
+
+- Training Time: ~6 minutes on CPU|----------|---------|-------------|
+
+| `/` | GET | API information and documentation |
+
+**Classes Supported:**| `/health` | GET | Health check endpoint |
+
+```| `/model/info` | GET | Model architecture information |
+
+0: airplane    5: dog| `/classes` | GET | List of supported classes |
+
+1: automobile  6: frog| `/classify` | POST | Single image classification |
+
+2: bird        7: horse| `/classify/batch` | POST | Batch image classification |
+
+3: cat         8: ship
+
+4: deer        9: truck### Example API Usage
+
+```
+
+**Single Image Classification:**
+
+## Technical Details```bash
+
+curl -X POST "http://localhost:8000/classify" \
+
+### Architecture Implementation     -H "accept: application/json" \
+
+     -H "Content-Type: multipart/form-data" \
+
+The CNN is implemented in PyTorch following the exact specifications:     -F "file=@image.jpg"
+
+```
+
+```python
+
+class AssignmentCNN(nn.Module):**Response:**
+
+    def __init__(self, num_classes=10):```json
+
+        super(AssignmentCNN, self).__init__(){
+
+          "filename": "image.jpg",
+
+        # First convolutional block  "prediction": {
+
+        self.conv1 = nn.Conv2d(3, 16, kernel_size=3, stride=1, padding=1)    "class": "airplane",
+
+        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)    "class_index": 0,
+
+            "confidence": 0.892
+
+        # Second convolutional block    },
+
+        self.conv2 = nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)  "top_3_predictions": [
+
+        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)    {"class": "airplane", "class_index": 0, "confidence": 0.892},
+
+            {"class": "bird", "class_index": 2, "confidence": 0.087},
+
+        # Fully connected layers    {"class": "ship", "class_index": 8, "confidence": 0.021}
+
+        self.fc1 = nn.Linear(16 * 16 * 32, 100)  ]
+
+        self.fc2 = nn.Linear(100, num_classes)}
+
+``````
+
+
+
+## Testing## 🐳 Docker Deployment
+
+
+
+### Run All Tests### Build the Docker Image
+
+
+
+```bash```bash
+
+# Test the model inferencedocker build -f Dockerfile.assignment2 -t assignment2-cnn .
+
+python assignment2_demo.py```
+
+
+
+# Test the API endpoints### Run the Container
+
+python test_assignment2_api.py
+
+``````bash
+
 docker run -p 8000:8000 assignment2-cnn
-```
 
-### Health Check
+### Manual Testing```
 
-```bash
+
+
+```bash### Health Check
+
+# Health check
+
+curl http://localhost:8000/health```bash
+
 curl http://localhost:8000/health
-```
+
+# Model information```
+
+curl http://localhost:8000/model/info
 
 ## 📊 Model Performance
 
-**Training Results:**
-- Dataset: CIFAR-10 (50,000 training, 10,000 test images)
+# Classes list
+
+curl http://localhost:8000/classes**Training Results:**
+
+```- Dataset: CIFAR-10 (50,000 training, 10,000 test images)
 - Image Size: Resized from 32×32 to 64×64 RGB
 - Training Epochs: 10
 - Final Test Accuracy: 65.68%
